@@ -7,6 +7,7 @@ const category = document.getElementById("category")
 // Seleciona os elementos da Lista.
 const expenseList = document.querySelector("ul")
 const expensesQuantity = document.querySelector("aside header p span")
+const expensesTotal = document.querySelector("aside header h2")
 
 // entrada de evento no input
 amount.oninput = () => {
@@ -30,6 +31,7 @@ function formatCurrencyBRL(value) {
     // retorna o valor formatado
     return value
 }
+
 
 form.onsubmit = (event) => {
     // previne o comportamento padrão de recarregar a página.
@@ -96,8 +98,8 @@ function expenseAdd(newExpense){
         // atualiza os totais.
         updateTotals()
     } catch (error) {
-        alert("Não foi possivel atualizar a lista de despesas.")
         console.log(error)
+        alert("Não foi possivel atualizar a lista de despesas.")
     }
 }
 
@@ -108,14 +110,44 @@ function updateTotals() {
 
         // atualiza a quantidade de itens da lista
         expensesQuantity.textContent = `${items.length} ${
-            items.length > 1 ? "despesas" : "despesa"
+         items.length > 1 ? "despesas" : "despesa"
         }`
+
+
+        //variável para incrementar o total.
+        let total = 0
+
+        // percorre cada item (li) da lista(ul)
+        for(let item = 0; item < items.length; item++){
+            const itemAmount = items[item].querySelector(".expense-amount")
+
+            // remover caracteres não númericos e substitui pelo ponto.
+            let value = itemAmount.textContent.replace(/[^\d]/g, "").replace(",",".")
+
+            // converte o valor para float
+            value = parseFloat(value)
+
+            // verifica se é número válido.
+            if (isNaN(value)) {
+                return alert(
+                    "Não foi possível calcular o total. O valor não parecer ser um número."
+                )
+            }
+            
+            // incrementar o valor total.
+            total += Number(value)
+
+        }
+
+        expensesTotal.textContent = total
+
 
     } catch (error) {
         console.log(error)
         alert("Não foi possível atualizar os totais.")
     }
 }
+
 
 
 
